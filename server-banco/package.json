@@ -1,0 +1,13 @@
+{
+  "name": "banco-poli",
+  "version": "1.0.0",
+  "description": "Laboratorio CSRF - Banco Poli (Vulnerable)",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cookie-parser": "^1.4.6"
+  }
+}

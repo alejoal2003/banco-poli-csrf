@@ -1,0 +1,40 @@
+# ================================================
+# LABORATORIO CSRF - BANCO POLI
+# ================================================
+# Uso: docker-compose up --build
+# 
+# Servicios:
+#   - Banco Poli: http://localhost:8080
+#   - Sitio Hacker: http://localhost:9090
+# ================================================
+
+version: '3.8'
+
+services:
+  # ============================================
+  # 🏦 SERVIDOR DEL BANCO (Vulnerable a CSRF)
+  # ============================================
+  banco-poli:
+    build: ./server-banco
+    container_name: banco-poli
+    ports:
+      - "8080:3000"
+    restart: unless-stopped
+    networks:
+      - csrf-lab
+
+  # ============================================
+  # 😈 SITIO DEL HACKER (Ataque CSRF)
+  # ============================================
+  hacker-site:
+    build: ./hacker-site
+    container_name: hacker-site
+    ports:
+      - "9090:80"
+    restart: unless-stopped
+    networks:
+      - csrf-lab
+
+networks:
+  csrf-lab:
+    driver: bridge
