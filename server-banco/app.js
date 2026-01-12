@@ -7,11 +7,16 @@
 
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const csrf = require('csurf');
+const csrfProtection = csrf({
+    cookie: true
+});
 const app = express();
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
 
 // Base de datos simulada (en memoria)
 const usuarios = {
@@ -146,7 +151,7 @@ function verificarSesion(req, res, next) {
 // ==========================================
 // PÁGINA PRINCIPAL - Dashboard
 // ==========================================
-app.get('/', verificarSesion, (req, res) => {
+app.get('/', verificarSesion, csrfProtection, (req, res) => {
     const usuario = req.usuario;
     const saldo = usuarios[usuario].saldo;
     
@@ -264,6 +269,9 @@ app.get('/', verificarSesion, (req, res) => {
                 <div class="card">
                     <h2>💸 Realizar Transferencia</h2>
                     <form action="/transferir" method="POST">
+                        <!-- TOKEN CSRF -->
+                        <input type="hidden" name="_csrf" value="${req.csrfToken()}">
+
                         <label>Cuenta destino:</label>
                         <input type="text" name="destino" placeholder="Número de cuenta" required>
                         
@@ -299,7 +307,7 @@ app.get('/', verificarSesion, (req, res) => {
 // ==========================================
 // 🚨 RUTA VULNERABLE A CSRF 🚨
 // ==========================================
-app.post('/transferir', verificarSesion, (req, res) => {
+app.post('/transferir', verificarSesion, csrfProtection, (req, res) => {
     const usuario = req.usuario;
     const { destino, monto } = req.body;
     const cantidad = parseInt(monto);
@@ -391,6 +399,18 @@ app.post('/transferir', verificarSesion, (req, res) => {
 app.get('/logout', (req, res) => {
     res.clearCookie('sesion');
     res.redirect('/login');
+});
+app.use((err, req, res, next) => {
+    if (err.code === 'EBADCSRFTOKEN') {
+        // Token CSRF inválido o inexistente
+        return res.status(403).send(`
+            <h1>🚫 Ataque CSRF Bloqueado</h1>
+            <p>Se detectó una petición sin token CSRF válido.</p>
+            <p><strong>Acción cancelada por seguridad.</strong></p>
+            <a href="/">Volver al banco</a>
+        `);
+    }
+    next(err);
 });
 
 // ==========================================
